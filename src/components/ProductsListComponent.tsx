@@ -1,4 +1,5 @@
 import { Pencil, Trash } from 'phosphor-react'
+import { DateFormatter } from '../db/DateFormatter'
 import { DataProps } from '../db/products'
 import { useAppDispatch } from '../redux/hooks'
 import {
@@ -40,6 +41,12 @@ export function ProductsListComponent({
   return (
     <>
       {currentProducts.map((value, index) => {
+        let expirationDate
+        if (value.expirationDate)
+          expirationDate = new DateFormatter(value.expirationDate).FormattedData
+        const manufacturingDate = new DateFormatter(value.manufacturingDate)
+          .FormattedData
+
         return (
           <div
             key={index}
@@ -72,7 +79,7 @@ export function ProductsListComponent({
               <span className="text-lg font-semibold mr-2">
                 Data de Fabricação:
               </span>
-              <span>{value.manufacturingDate.toString()}</span>
+              <span>{manufacturingDate}</span>
             </div>
             <div>
               <span className="text-lg font-semibold mr-2">
@@ -85,7 +92,7 @@ export function ProductsListComponent({
                 <span className="text-lg font-semibold mr-2">
                   Data de Validade:
                 </span>
-                <span>{value.expirationDate.toString()}</span>
+                <span>{expirationDate}</span>
               </div>
             )}
             <div>

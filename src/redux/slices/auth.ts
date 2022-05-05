@@ -27,9 +27,9 @@ export const authSlice = createSlice({
       state.user = payload
       state.error = null
     },
-    signInFail: (state, { payload }) => {
+    signInFail: state => {
       state.isLoading = false
-      state.error = payload
+      state.error = 'E-mail ou senha inválido.'
     },
     signOut: state => {
       state.isLoading = false

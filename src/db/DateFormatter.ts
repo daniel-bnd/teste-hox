@@ -1,8 +1,8 @@
-export class DataFormatter {
+export class DateFormatter {
   private date: Date
 
-  constructor(dateStr: Date) {
-    this.date = dateStr
+  constructor(dateStr: string) {
+    this.date = new Date(dateStr)
   }
 
   get FormattedData() {

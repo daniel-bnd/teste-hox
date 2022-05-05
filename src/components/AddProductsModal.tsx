@@ -69,7 +69,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
           <label className="flex flex-col gap-2">
             <span>Nome:</span>
             <input
-              className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
+              className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm caret-cyan-400"
               type="text"
               name="name"
               onChange={e => setName(e.target.value)}
@@ -86,6 +86,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
               required
             />
           </label>
+
           <label className="flex flex-col gap-2">
             <span>Produto Perecível:</span>
             <select
@@ -118,7 +119,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
             <div>
               <span className="mr-2">R$</span>
               <input
-                className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm w-20"
+                className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm w-20 caret-cyan-400"
                 type="number"
                 name="price"
                 onChange={e => setPrice(Number(e.target.value))}

@@ -2,10 +2,11 @@ import axios from 'axios'
 import type { GetServerSideProps, NextPage } from 'next'
 import { useRouter } from 'next/router'
 import { parseCookies } from 'nookies'
-import { LockSimple, User } from 'phosphor-react'
+import { CircleNotch, LockSimple, User } from 'phosphor-react'
 import { useForm } from 'react-hook-form'
-import { useAppDispatch } from '../redux/hooks'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
 import { signInFail, signInPending, signInSuccess } from '../redux/slices/auth'
+import { RootState } from '../redux/store'
 
 type Inputs = {
   email: string
@@ -15,21 +16,22 @@ type Inputs = {
 const Home: NextPage = () => {
   const { register, handleSubmit } = useForm<Inputs>()
   const router = useRouter()
+  const auth = useAppSelector((state: RootState) => state.signIn)
   const dispatch = useAppDispatch()
 
   async function handleSignIn({ email, password }: Inputs) {
+    dispatch(signInPending())
     await axios
       .post('/api/authenticate', {
         email,
         password
       })
       .then(data => {
-        dispatch(signInPending())
         dispatch(signInSuccess(email))
         router.push('/admin')
       })
       .catch(error => {
-        dispatch(signInFail(error))
+        dispatch(signInFail())
       })
   }
 
@@ -61,16 +63,31 @@ const Home: NextPage = () => {
             placeholder="Password - admin"
             required
           />
+          {auth.error && (
+            <span className="text-center text-sm text-red-500">
+              {auth.error}
+            </span>
+          )}
           <button
             type="submit"
             className="relative flex items-center justify-center bg-cyan-400 hover:bg-cyan-500 rounded-lg py-2"
           >
-            <LockSimple
-              className="h-6 w-6 absolute left-4"
-              color="#1e1f22"
-              weight="bold"
-            />
-            <span className="text-zinc-800 font-bold">Sign In</span>
+            {auth.isLoading ? (
+              <CircleNotch
+                className="h-6 w-6 animate-spin"
+                color="#1e1f22"
+                weight="bold"
+              />
+            ) : (
+              <>
+                <LockSimple
+                  className="h-6 w-6 absolute left-4"
+                  color="#1e1f22"
+                  weight="bold"
+                />
+                <span className="text-zinc-800 font-bold">Sign In</span>
+              </>
+            )}
           </button>
         </form>
       </div>

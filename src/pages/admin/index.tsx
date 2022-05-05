@@ -55,7 +55,7 @@ const Admin: NextPage = () => {
   }
 
   useEffect(() => {
-    const localProducts = localStorage.getItem('persist:products')
+    const localProducts: any = localStorage.getItem('persist:products')
     async function getProducts() {
       await axios
         .get('/api/getProducts')
@@ -64,7 +64,7 @@ const Admin: NextPage = () => {
         })
         .catch()
     }
-    if (!localProducts) {
+    if (JSON.parse(localProducts).data.length === 2) {
       getProducts()
     }
   }, [dispatch])
@@ -108,7 +108,7 @@ const Admin: NextPage = () => {
             Lista de Produtos
           </h2>
 
-          <div className="flex flex-row gap-6">
+          <form className="flex flex-row gap-6">
             <label className="flex flex-row items-center gap-2">
               <span>Ordenar</span>
               <select
@@ -141,7 +141,7 @@ const Admin: NextPage = () => {
                 <option value={30}>30 por página</option>
               </select>
             </label>
-          </div>
+          </form>
         </header>
 
         {products && (
