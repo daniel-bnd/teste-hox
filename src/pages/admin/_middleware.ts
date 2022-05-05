@@ -11,9 +11,9 @@ export async function middleware(req: NextRequest, ev: NextFetchEvent) {
         NextResponse.next()
       })
       .catch(() => {
-        NextResponse.redirect('http://localhost:3000/')
+        NextResponse.redirect(`${process.env.URL}/`)
       })
   } else {
-    return NextResponse.redirect('http://localhost:3000/')
+    return NextResponse.redirect(`${process.env.URL}/`)
   }
 }
