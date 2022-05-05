@@ -1,5 +1,10 @@
+import axios from 'axios'
 import { Plus, X } from 'phosphor-react'
 import { FormEvent, useState } from 'react'
+import { DataFormatter } from '../db/DataFormatter'
+import { useAppDispatch, useAppSelector } from '../redux/hooks'
+import { addProducts } from '../redux/slices/products'
+import { RootState } from '../redux/store'
 
 interface AddProductsModalProps {
   onClose: () => void
@@ -7,31 +12,56 @@ interface AddProductsModalProps {
 
 export function AddProductsModal({ onClose }: AddProductsModalProps) {
   const [name, setName] = useState<string>()
-  const [manufacturingDate, setManufacturingDate] = useState<string>()
-  const [perishableProduct, setPerishableProduct] = useState<string>('false')
-  const [expirationDate, setExpirationDate] = useState<string>()
+  const [manufacturingDate, setManufacturingDate] = useState<string>('')
+  const [perishableProduct, setPerishableProduct] = useState<boolean>(false)
+  const [expirationDate, setExpirationDate] = useState<string>('false')
   const [price, setPrice] = useState<number>()
-
-  function handleSendForm(event: FormEvent) {
-    event.preventDefault()
-    console.log(
-      name,
-      manufacturingDate,
-      perishableProduct,
-      expirationDate,
-      price
-    )
-  }
+  const products = useAppSelector((state: RootState) => state.products.data)
+  const dispatch = useAppDispatch()
 
   function handleOutsideClick(e: any) {
     if (e.target.id === 'AddProductsModal') onClose()
+  }
+
+  function setPerishableBoolean(key: string) {
+    key === 'true' ? setPerishableProduct(true) : setPerishableProduct(false)
+  }
+
+  async function handleAddProducts(event: FormEvent) {
+    event.preventDefault()
+
+    let newExpirationFormatted
+    const newManufacturingFormatted = new DataFormatter(
+      new Date(manufacturingDate)
+    ).FormattedData
+
+    if (expirationDate !== 'false') {
+      newExpirationFormatted = new DataFormatter(new Date(expirationDate))
+        .FormattedData
+    }
+
+    const newProduct = {
+      id: products.length + 1,
+      name,
+      manufacturingDate: newManufacturingFormatted,
+      perishableProduct,
+      expirationDate: newExpirationFormatted,
+      price
+    }
+    await axios
+      .post('/api/addProducts', newProduct)
+      .then(response => {
+        dispatch(addProducts(newProduct))
+        onClose()
+      })
+      .catch()
   }
 
   return (
     <div
       onClick={handleOutsideClick}
       id="AddProductsModal"
-      className="flex items-center justify-center h-screen w-screen bg-black bg-opacity-50 absolute l-0 t-0"
+      className="flex items-center justify-center h-full w-full bg-black bg-opacity-50 fixed l-0 t-0"
     >
       <div className="flex flex-col gap-6 p-6 border-2 rounded-lg border-cyan-400 bg-zinc-900">
         <header className="relative flex flex-row gap-2 items-center justify-start">
@@ -47,7 +77,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
           </button>
         </header>
 
-        <form onSubmit={handleSendForm} className="flex flex-col gap-4 w-96">
+        <form onSubmit={handleAddProducts} className="flex flex-col gap-4 w-96">
           <label className="flex flex-col gap-2">
             <span>Nome:</span>
             <input
@@ -72,8 +102,8 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
             <span>Produto Perecível:</span>
             <select
               className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
-              defaultValue={perishableProduct}
-              onChange={e => setPerishableProduct(e.target.value)}
+              defaultValue={perishableProduct ? 'true' : 'false'}
+              onChange={e => setPerishableBoolean(e.target.value)}
               name="perishableProduct"
               required
             >
@@ -82,13 +112,13 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
               <option value="false">Não</option>
             </select>
           </label>
-          {perishableProduct === 'true' && (
+          {perishableProduct && (
             <label className="flex flex-col gap-2">
               <span>Data de validade:</span>
               <input
                 className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
                 type="date"
-                name="manufacturingDate"
+                name="expirationDate"
                 min={manufacturingDate}
                 onChange={e => setExpirationDate(e.target.value)}
                 required
@@ -103,7 +133,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
                 className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm w-20"
                 type="number"
                 name="price"
-                onChange={e => setPrice(parseInt(e.target.value))}
+                onChange={e => setPrice(Number(e.target.value))}
                 required
               />
             </div>

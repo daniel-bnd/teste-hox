@@ -1,9 +1,10 @@
-interface DataProps {
+import { DataFormatter } from './DataFormatter'
+export interface DataProps {
   id: number
   name: string
   manufacturingDate: string
   perishableProduct: boolean
-  expirationDate?: string
+  expirationDate: string | false
   price: number
 }
 
@@ -11,111 +12,104 @@ export interface ProductsProps {
   data: DataProps[]
 }
 
-const data = new Date()
-
-const day =
-  data.getDay() < 10
-    ? `0${Number(data.getDay()) + 1}`
-    : Number(data.getDay()) + 1
-
-const month =
-  data.getMonth() < 10
-    ? `0${Number(data.getMonth()) + 1}`
-    : Number(data.getMonth() + 1)
-
-const formatedDate = `${day}-${month}-${data.getFullYear()}`
+const formattedDate = new DataFormatter(new Date()).FormattedData
 
 export const Products: ProductsProps = {
   data: [
     {
       id: 1,
       name: 'Placa de vídeo',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: false,
-      price: 4000
+      expirationDate: false,
+      price: 4000.99
     },
     {
       id: 2,
       name: 'Processador',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: false,
+      expirationDate: false,
       price: 2200
     },
     {
       id: 3,
       name: 'Placa-Mãe',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: false,
+      expirationDate: false,
       price: 1250
     },
     {
       id: 4,
       name: 'Memória-Ram',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: false,
+      expirationDate: false,
       price: 800
     },
     {
       id: 5,
       name: 'HD',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 120
     },
     {
       id: 6,
       name: 'SSD',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: false,
+      expirationDate: false,
       price: 240
     },
     {
       id: 7,
       name: 'Fonte',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 345
     },
     {
       id: 8,
       name: 'Gabinete',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 665
     },
     {
       id: 9,
       name: 'Teclado',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 1400
     },
     {
       id: 10,
       name: 'Mouse',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 1200
     },
     {
       id: 11,
       name: 'Headset',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 1500
     },
     {
       id: 12,
       name: 'Monitor',
-      manufacturingDate: formatedDate,
+      manufacturingDate: formattedDate,
       perishableProduct: true,
-      expirationDate: formatedDate,
+      expirationDate: formattedDate,
       price: 1500
     }
   ]
