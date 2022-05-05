@@ -1,10 +1,9 @@
-import { DataFormatter } from './DataFormatter'
 export interface DataProps {
   id: number
   name: string
   manufacturingDate: string
   perishableProduct: boolean
-  expirationDate: string | false
+  expirationDate?: string
   price: number
 }
 
@@ -12,104 +11,97 @@ export interface ProductsProps {
   data: DataProps[]
 }
 
-const formattedDate = new DataFormatter(new Date()).FormattedData
-
 export const Products: ProductsProps = {
   data: [
     {
       id: 1,
       name: 'Placa de vídeo',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: false,
-      expirationDate: false,
       price: 4000.99
     },
     {
       id: 2,
       name: 'Processador',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: false,
-      expirationDate: false,
       price: 2200
     },
     {
       id: 3,
       name: 'Placa-Mãe',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: false,
-      expirationDate: false,
       price: 1250
     },
     {
       id: 4,
       name: 'Memória-Ram',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: false,
-      expirationDate: false,
       price: 800
     },
     {
       id: 5,
       name: 'HD',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 120
     },
     {
       id: 6,
       name: 'SSD',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: false,
-      expirationDate: false,
       price: 240
     },
     {
       id: 7,
       name: 'Fonte',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 345
     },
     {
       id: 8,
       name: 'Gabinete',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 665
     },
     {
       id: 9,
       name: 'Teclado',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 1400
     },
     {
       id: 10,
       name: 'Mouse',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 1200
     },
     {
       id: 11,
       name: 'Headset',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 1500
     },
     {
       id: 12,
       name: 'Monitor',
-      manufacturingDate: formattedDate,
+      manufacturingDate: new Date().toISOString().split('T')[0],
       perishableProduct: true,
-      expirationDate: formattedDate,
+      expirationDate: new Date().toISOString().split('T')[0],
       price: 1500
     }
   ]

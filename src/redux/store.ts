@@ -11,6 +11,7 @@ import {
 } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import authReducer from './slices/auth'
+import modalReducer from './slices/modal'
 import productsReducer from './slices/products'
 
 const persistedSignInReducer = persistReducer(
@@ -37,7 +38,8 @@ const store = configureStore({
   devTools: true,
   reducer: {
     signIn: persistedSignInReducer,
-    products: persistedProducts
+    products: persistedProducts,
+    modalState: modalReducer
   },
   middleware: getDefaultMiddleware =>
     getDefaultMiddleware({

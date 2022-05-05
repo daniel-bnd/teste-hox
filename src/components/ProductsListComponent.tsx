@@ -1,5 +1,11 @@
 import { Pencil, Trash } from 'phosphor-react'
 import { DataProps } from '../db/products'
+import { useAppDispatch } from '../redux/hooks'
+import {
+  EditProductModalProps,
+  setModalEditProduct
+} from '../redux/slices/modal'
+import { deleteProduct } from '../redux/slices/products'
 
 interface ProductsListComponentProps {
   currentProducts: DataProps[]
@@ -8,6 +14,29 @@ interface ProductsListComponentProps {
 export function ProductsListComponent({
   currentProducts
 }: ProductsListComponentProps) {
+  const dispatch = useAppDispatch()
+
+  function handleOpenModalEditProduct({
+    id,
+    name,
+    manufacturingDate,
+    perishableProduct,
+    expirationDate,
+    price
+  }: EditProductModalProps) {
+    const productToEdit = {
+      isModalEditProductOpen: true,
+      id,
+      name,
+      manufacturingDate,
+      perishableProduct,
+      expirationDate,
+      price
+    }
+
+    dispatch(setModalEditProduct(productToEdit))
+  }
+
   return (
     <>
       {currentProducts.map((value, index) => {
@@ -19,10 +48,22 @@ export function ProductsListComponent({
             <div className="flex flex-row justify-between mb-4">
               <h3 className="text-2xl font-bold text-cyan-400">{value.name}</h3>
               <div className="flex gap-6">
-                <button>
+                <button
+                  onClick={() =>
+                    handleOpenModalEditProduct({
+                      isModalEditProductOpen: true,
+                      id: value.id,
+                      name: value.name,
+                      manufacturingDate: value.manufacturingDate,
+                      perishableProduct: value.perishableProduct,
+                      expirationDate: value.expirationDate,
+                      price: value.price
+                    })
+                  }
+                >
                   <Pencil className="h-8 w-8" color="#22d3ee" />
                 </button>
-                <button>
+                <button onClick={() => dispatch(deleteProduct(value.id))}>
                   <Trash className="h-8 w-8" color="#22d3ee" />
                 </button>
               </div>
@@ -31,7 +72,7 @@ export function ProductsListComponent({
               <span className="text-lg font-semibold mr-2">
                 Data de Fabricação:
               </span>
-              <span>{value.manufacturingDate?.toString()}</span>
+              <span>{value.manufacturingDate.toString()}</span>
             </div>
             <div>
               <span className="text-lg font-semibold mr-2">
@@ -44,7 +85,7 @@ export function ProductsListComponent({
                 <span className="text-lg font-semibold mr-2">
                   Data de Validade:
                 </span>
-                <span>{value.expirationDate?.toString()}</span>
+                <span>{value.expirationDate.toString()}</span>
               </div>
             )}
             <div>

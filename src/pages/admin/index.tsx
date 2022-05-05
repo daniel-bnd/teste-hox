@@ -11,15 +11,26 @@ import {
 } from 'phosphor-react'
 import { useEffect, useState } from 'react'
 import { AddProductsModal } from '../../components/AddProductsModal'
+import { EditProductModal } from '../../components/EditProductModal'
 import { ProductsListComponent } from '../../components/ProductsListComponent'
 import { useAppDispatch, useAppSelector } from '../../redux/hooks'
+import {
+  changeModalAddProducts,
+  changeModalEditProduct
+} from '../../redux/slices/modal'
 import { setProducts, sortProducts } from '../../redux/slices/products'
 import { RootState } from '../../redux/store'
 
 const Admin: NextPage = () => {
-  const [isModalOpen, setIsModalOpen] = useState(false)
   const router = useRouter()
   const dispatch = useAppDispatch()
+  const modalAddProducts = useAppSelector(
+    (state: RootState) => state.modalState.isModalAddProductsOpen
+  )
+  const modalEditProduct = useAppSelector(
+    (state: RootState) =>
+      state.modalState.EditProductModalRedux.isModalEditProductOpen
+  )
   const products = useAppSelector((state: RootState) => state.products.data)
 
   const [itensPerPage, setItensPerPage] = useState(10)
@@ -35,12 +46,16 @@ const Admin: NextPage = () => {
     router.push('/')
   }
 
-  function handleOpenModal() {
-    setIsModalOpen(!isModalOpen)
+  function handleOpenModalAddProducts() {
+    dispatch(changeModalAddProducts())
+  }
+
+  function handleOpenModalEditProduct() {
+    dispatch(changeModalEditProduct())
   }
 
   useEffect(() => {
-    const localProducts = localStorage.getItem('products')
+    const localProducts = localStorage.getItem('persist:products')
     async function getProducts() {
       await axios
         .get('/api/getProducts')
@@ -61,14 +76,19 @@ const Admin: NextPage = () => {
 
   return (
     <>
-      {isModalOpen ? <AddProductsModal onClose={handleOpenModal} /> : null}
+      {modalAddProducts ? (
+        <AddProductsModal onClose={handleOpenModalAddProducts} />
+      ) : null}
+      {modalEditProduct ? (
+        <EditProductModal onClose={handleOpenModalEditProduct} />
+      ) : null}
       <header className="h-24 bg-zinc-800">
         <nav className="flex flex-row items-center justify-between w-[1024px] h-full container mx-auto">
           <Image src="/hoxlogo.png" alt="Logo da Hox " width={56} height={48} />
           <div className="flex gap-8">
             <button
               className="bg-cyan-400 text-zinc-800 font-bold py-2 px-4 rounded-lg hover:bg-cyan-500"
-              onClick={handleOpenModal}
+              onClick={handleOpenModalAddProducts}
             >
               Adicionar Produtos
             </button>
@@ -95,8 +115,10 @@ const Admin: NextPage = () => {
                 className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 pr-4 focus:outline-none text-sm"
                 onChange={e => sortProductsBy(e.target.value)}
                 name="order"
+                defaultValue="default"
                 required
               >
+                <option value="default" disabled hidden></option>
                 <option value="manufacturingDate">Data de Fabricação</option>
                 <option value="lowestPrice">Preço crescente</option>
                 <option value="biggestPrice">Preço decrescente</option>
@@ -146,6 +168,7 @@ const Admin: NextPage = () => {
               {Array.from(Array(pages), (item, index) => {
                 return (
                   <button
+                    key={index}
                     value={index}
                     onClick={() => setCurrentPage(Number(index))}
                     className="h-10 w-10 bg-zinc-900 text-cyan-400 rounded-full"

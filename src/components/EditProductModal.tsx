@@ -1,20 +1,25 @@
 import axios from 'axios'
 import { Plus, X } from 'phosphor-react'
-import { FormEvent, useState } from 'react'
+import { FormEvent, useEffect, useState } from 'react'
 import { useAppDispatch, useAppSelector } from '../redux/hooks'
-import { addProducts } from '../redux/slices/products'
+import { editProduct } from '../redux/slices/products'
 import { RootState } from '../redux/store'
 
-interface AddProductsModalProps {
+interface EditProductModalProps {
   onClose: () => void
 }
 
-export function AddProductsModal({ onClose }: AddProductsModalProps) {
-  const [name, setName] = useState<string>()
+export function EditProductModal({ onClose }: EditProductModalProps) {
+  const __oldProduct = useAppSelector(
+    (state: RootState) => state.modalState.EditProductModalRedux
+  )
+  const [name, setName] = useState<string>(__oldProduct.name)
   const [manufacturingDate, setManufacturingDate] = useState<string>('')
-  const [perishableProduct, setPerishableProduct] = useState<boolean>(false)
-  const [expirationDate, setExpirationDate] = useState<string>('')
-  const [price, setPrice] = useState<number>()
+  const [perishableProduct, setPerishableProduct] = useState<boolean>(
+    __oldProduct.perishableProduct
+  )
+  const [expirationDate, setExpirationDate] = useState<any>('')
+  const [price, setPrice] = useState<number>(__oldProduct.price)
   const products = useAppSelector((state: RootState) => state.products.data)
   const dispatch = useAppDispatch()
 
@@ -26,10 +31,10 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
     key === 'true' ? setPerishableProduct(true) : setPerishableProduct(false)
   }
 
-  async function handleAddProducts(event: FormEvent) {
+  async function handleEditProduct(event: FormEvent) {
     event.preventDefault()
     const newProduct = {
-      id: products.length + 1,
+      id: __oldProduct.id,
       name,
       manufacturingDate,
       perishableProduct,
@@ -39,11 +44,16 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
     await axios
       .post('/api/addProducts', newProduct)
       .then(response => {
-        dispatch(addProducts(newProduct))
+        dispatch(editProduct(newProduct))
         onClose()
       })
       .catch()
   }
+
+  useEffect(() => {
+    setManufacturingDate(__oldProduct.manufacturingDate)
+    setExpirationDate(__oldProduct.expirationDate)
+  }, [__oldProduct])
 
   return (
     <div
@@ -55,7 +65,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
         <header className="relative flex flex-row gap-2 items-center justify-start">
           <Plus className="w-8 h-8" />
 
-          <span className="text-lg font-bold">Adicionar Produto</span>
+          <span className="text-lg font-bold">Editar Produto</span>
 
           <button
             onClick={onClose}
@@ -65,13 +75,14 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
           </button>
         </header>
 
-        <form onSubmit={handleAddProducts} className="flex flex-col gap-4 w-96">
+        <form onSubmit={handleEditProduct} className="flex flex-col gap-4 w-96">
           <label className="flex flex-col gap-2">
             <span>Nome:</span>
             <input
               className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
               type="text"
               name="name"
+              value={name}
               onChange={e => setName(e.target.value)}
               required
             />
@@ -82,6 +93,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
               className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
               type="date"
               name="manufacturingDate"
+              value={__oldProduct.manufacturingDate}
               onChange={e => setManufacturingDate(e.target.value)}
               required
             />
@@ -91,8 +103,9 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
             <select
               className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
               defaultValue={perishableProduct ? 'true' : 'false'}
-              onChange={e => setPerishableBoolean(e.target.value)}
               name="perishableProduct"
+              value={perishableProduct ? 'true' : 'false'}
+              onChange={e => setPerishableBoolean(e.target.value)}
               required
             >
               <option value="default" disabled hidden></option>
@@ -107,8 +120,9 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
                 className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm"
                 type="date"
                 name="expirationDate"
-                min={manufacturingDate.toLocaleString()}
-                onChange={e => setExpirationDate(e.target.value)}
+                min={manufacturingDate}
+                value={expirationDate}
+                onChange={e => setExpirationDate(new Date(e.target.value))}
                 required
               />
             </label>
@@ -121,6 +135,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
                 className="bg-zinc-900 border-2 border-cyan-500 rounded-md p-2 focus:outline-none text-sm w-20"
                 type="number"
                 name="price"
+                value={price}
                 onChange={e => setPrice(Number(e.target.value))}
                 required
               />
@@ -130,7 +145,7 @@ export function AddProductsModal({ onClose }: AddProductsModalProps) {
             type="submit"
             className="relative flex items-center justify-center bg-cyan-400 hover:bg-cyan-500 rounded-lg py-3 mt-4"
           >
-            <span className="text-zinc-800 font-bold">Adicionar</span>
+            <span className="text-zinc-800 font-bold">Editar</span>
           </button>
         </form>
       </div>

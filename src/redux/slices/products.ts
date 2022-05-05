@@ -13,7 +13,20 @@ export const productsSlice = createSlice({
       return (state = payload)
     },
     addProducts: (state, { payload }) => {
-      state.data.unshift(payload)
+      state.data.push(payload)
+    },
+    editProduct: (state, { payload }) => {
+      const product = state.data.findIndex(product => {
+        return product.id === payload.id
+      })
+      state.data[product] = payload
+    },
+    deleteProduct: (state, { payload }) => {
+      const newProductsList = state.data.filter(product => {
+        return product.id !== payload
+      })
+      console.log(newProductsList)
+      state.data = newProductsList
     },
     sortProducts: (state, { payload }) => {
       const newProductsOrder: DataProps[] = [...state.data]
@@ -46,6 +59,12 @@ export const productsSlice = createSlice({
   }
 })
 
-export const { setProducts, addProducts, sortProducts } = productsSlice.actions
+export const {
+  setProducts,
+  addProducts,
+  editProduct,
+  deleteProduct,
+  sortProducts
+} = productsSlice.actions
 
 export default productsSlice.reducer
